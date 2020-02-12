@@ -3,6 +3,7 @@ from datetime import date
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
+import math
 
 teamdata=pd.read_csv('TeamRecords/NetsRecordInfo.csv')
 playerdata=pd.read_csv('PlayerInfo/Kyrie.csv')
@@ -10,13 +11,19 @@ teamdf=teamdata.iloc[:,7:14]
 #print(teamdf)
 #print(playerdata)
 teamGames=teamdata[['Rk','result','Tm','Opp']]
+
 gamesPlayed=playerdata[['Rk','G']]
+gamesPlayed.replace(to_replace=np.nan, value= 0)
+
+gamesMissed=gamesPlayed[gamesPlayed['G'].isnull()]
 gamesPlayed=gamesPlayed[gamesPlayed['G']>0]
+
 #print(gamesPlayed)
 #print(teamGames)
 
 commonGames = pd.merge(teamGames, gamesPlayed, on=['Rk'], how='inner')
-print(commonGames)
+uncommonGames= pd.merge(teamGames, gamesMissed, on=['Rk'])
+#print(commonGames)
 itt=int(0)
 winCount=int(0)
 lossCount=int(0)
@@ -27,4 +34,17 @@ for index, row in commonGames.iterrows():
     else:
         lossCount=lossCount+1
     itt=itt+1
-print(winCount,'-',lossCount)
+print('Record with player: ',winCount,'-',lossCount)
+
+#print(uncommonGames)
+itt=int(0)
+winCount=int(0)
+lossCount=int(0)
+for index, row in uncommonGames.iterrows():
+
+    if(row['result']=='W'):
+        winCount=winCount+1
+    else:
+        lossCount=lossCount+1
+    itt=itt+1
+print('Record without player: ',winCount,'-',lossCount)
