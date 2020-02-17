@@ -58,4 +58,4 @@ for index, row in uncommonGames.iterrows():
     itt=itt+1
 print('Record without player: ',winCount,'-',lossCount)
 print('PPG without player: ', pointsAgainst/itt)
-#print(findRecord('hi'))
+print(findRecord('hi'))
