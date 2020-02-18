@@ -31,14 +31,35 @@ def findRecord(team):
 
     #print(winningPcts)
     dataForDF={
-    'Team: ':teams,
+    'Team' :teams,
     'Winning Pct':winningPcts
     }
     #print(teams)
     #print(winningPcts)
     #print(Rank)
+
     winPct_frame=pd.DataFrame(
     dataForDF,
     index=Rank)
+    itt=int(0)
+    print(winPct_frame)
+
+    for i in range(rowCount):
+        row=winPct_frame.iloc[itt]
+        teamName=str(row['Team'])
+        if team in teamName:
+            return row['Winning Pct']
+
+        itt=itt+1
 
     return winPct_frame
+
+
+def strengthOfSchedule(team):
+
+    
+
+
+
+
+    return 0
