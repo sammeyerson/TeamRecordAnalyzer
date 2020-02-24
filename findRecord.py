@@ -243,7 +243,7 @@ def get_team_schedule(team, season ,playoffs=False):
     total_schedule=get_schedule(season)
     total_schedule=total_schedule[total_schedule['HOME_PTS']>0]
     total_schedule=total_schedule[total_schedule['VISITOR'].str.contains(team) | total_schedule['HOME'].str.contains(team)]
-    print(total_schedule)
+    #print(total_schedule)
     itt=int(0)
     teams=[]
     dates=[]
