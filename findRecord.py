@@ -125,10 +125,10 @@ def get_game_logs(name, start_date, end_date, playoffs=False):
                 for index, row in df.iterrows():
                     #if len(row['GS'])>1:
                         #ontinue
-                    active_df = active_df.append(row)
+                    active_df = active_df.append(row, sort=False)
                 if final_df is None:
                     final_df = pd.DataFrame(columns=list(active_df.columns))
-                final_df = final_df.append(active_df)
+                final_df = final_df.append(active_df, sort=False)
     return final_df
 
 
@@ -217,7 +217,7 @@ def get_schedule(season, playoffs=False):
             soup = BeautifulSoup(r.content, 'html.parser')
             table = soup.find('table', attrs={'id': 'schedule'})
             month_df = pd.read_html(str(table))[0]
-            df = df.append(month_df)
+            df = df.append(month_df, sort=False)
     df = df.reset_index()
     cols_to_remove = [i for i in df.columns if 'Unnamed' in i]
     cols_to_remove += [i for i in df.columns if 'Notes' in i]
@@ -238,9 +238,12 @@ def get_schedule(season, playoffs=False):
     df['DATE'] = df['DATE'].apply(lambda x: pd.to_datetime(x))
     return df
 
-def get_team_schedule(team, season, playoffs=False):
+def get_team_schedule(team, season ,playoffs=False):
     #MUST USE FULL TEAM NAME (ie 'Lakers' or 'Heat') NOT ABBREVIATION
     total_schedule=get_schedule(season)
+    total_schedule=total_schedule[total_schedule['HOME_PTS']>0]
+    total_schedule=total_schedule[total_schedule['VISITOR'].str.contains(team) | total_schedule['HOME'].str.contains(team)]
+    print(total_schedule)
     itt=int(0)
     teams=[]
     dates=[]
@@ -272,6 +275,9 @@ def get_team_schedule(team, season, playoffs=False):
             home_away.append('Away')
             itt=itt+1
             Rank.append(itt)
+
+        if float(row['HOME_PTS'])<0:
+            break
 
 
 
@@ -350,7 +356,7 @@ def record_without_player(player, team):
     player_games_missed['DATE']=player_games_missed['DATE'].astype(str)
     team_schedule=get_team_schedule(team,2020)
     team_schedule['DATE']=team_schedule['DATE'].astype(str)
-    uncommonGames = pd.merge(player_games_missed, team_schedule, on=['DATE'], sort=True)
+    uncommonGames = pd.merge(player_games_missed, team_schedule, on=['DATE'], sort=False)
     winCount=0
     lossCount=0
     for index, row in uncommonGames.iterrows():

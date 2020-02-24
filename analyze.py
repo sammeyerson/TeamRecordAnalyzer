@@ -24,8 +24,8 @@ end_date='2020-04-15'
 
 #print(get_game_logs('LaMarcus Aldridge',start_date,end_date))
 #print(get_team_schedule('Spurs',2020))
-player=input('Enter Player Name(ie: James Harden, Lebron James):')
-team=input('Enter Name of Team(Rockets for James Harden, Lakers for Lebron James):')
+player=input('Enter Player Name(ie: James Harden, LeBron James):')
+team=input('Enter Name of Team(Rockets for James Harden, Lakers for LeBron James):')
 #print(record_with_player('LaMarcus Aldridge', 'Spurs'))
 #print(record_without_player('LaMarcus Aldridge', 'Spurs'))
 print('Record with ',player,': ',record_with_player(player, team))
