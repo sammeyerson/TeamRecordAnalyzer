@@ -74,6 +74,7 @@ def strengthOfSchedule(team):
 
 
 def get_team_misc(team, season_end_year):
+    #credit: https://github.com/vishaalagartha/basketball_reference_scraper
     r = get(f'https://widgets.sports-reference.com/wg.fcgi?css=1&site=bbr&url=%2Fleagues%2FNBA_{season_end_year}.html&div=div_misc_stats')
     df = None
     if r.status_code==200:
@@ -92,6 +93,7 @@ def get_team_misc(team, season_end_year):
         return pd.Series(index=list(s.columns), data=s.values.tolist()[0])
 
 def get_game_logs(name, start_date, end_date, playoffs=False):
+    #credit: https://github.com/vishaalagartha/basketball_reference_scraper
     try:
         from utils import get_player_suffix
     except:
@@ -133,6 +135,7 @@ def get_game_logs(name, start_date, end_date, playoffs=False):
 
 
 def get_stats(name, stat_type='PER_GAME', playoffs=False, career=False):
+    #credit: https://github.com/vishaalagartha/basketball_reference_scraper
     try:
         from utils import get_player_suffix
     except:
@@ -163,6 +166,7 @@ def get_single_season_stats(playerName, stat_type='PER_GAME'):
     return careerStats.tail(1)
 
 def get_team_stats(team, season_end_year, data_format='PER_GAME'):
+    #credit: https://github.com/vishaalagartha/basketball_reference_scraper
     if data_format=='TOTAL':
         selector = 'div_team-stats-base'
     elif data_format=='PER_GAME':
@@ -185,6 +189,7 @@ def get_team_stats(team, season_end_year, data_format='PER_GAME'):
 
 
 def get_opp_stats(team, season_end_year, data_format='PER_GAME'):
+    #credit: https://github.com/vishaalagartha/basketball_reference_scraper
     if data_format=='TOTAL':
         selector = 'div_opponent-stats-base'
     elif data_format=='PER_GAME':
@@ -208,6 +213,7 @@ def get_opp_stats(team, season_end_year, data_format='PER_GAME'):
         return pd.Series(index=list(s.columns), data=s.values.tolist()[0])
 
 def get_schedule(season, playoffs=False):
+    #credit: https://github.com/vishaalagartha/basketball_reference_scraper
     months = ['October', 'November', 'December', 'January', 'February', 'March',
             'April', 'May']
     df = pd.DataFrame()

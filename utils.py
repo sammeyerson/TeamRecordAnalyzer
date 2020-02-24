@@ -1,6 +1,8 @@
 from requests import get
 from bs4 import BeautifulSoup
 
+#credit: https://github.com/vishaalagartha/basketball_reference_scraper
+
 def get_game_suffix(date, team1, team2):
     r = get(f'https://www.basketball-reference.com/boxscores/index.fcgi?year={date.year}&month={date.month}&day={date.day}')
     suffix = None
