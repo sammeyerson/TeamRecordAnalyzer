@@ -321,7 +321,8 @@ def record_with_player(player, team):
             winCount=winCount+1
         else:
             lossCount=lossCount+1
-    recordWPlayer=str(winCount)+'-'+str(lossCount)
+    winPercentage=round((float(winCount)/(float(lossCount)+float(winCount))),3)
+    recordWPlayer=str(winCount)+'-'+str(lossCount)+' ( '+str(winPercentage)+')'
     return recordWPlayer
 
 def record_without_player(player, team):
@@ -364,5 +365,7 @@ def record_without_player(player, team):
             winCount=winCount+1
         else:
             lossCount=lossCount+1
-    recordWPlayer=str(winCount)+'-'+str(lossCount)
+
+    winPercentage=round((float(winCount)/(float(lossCount)+float(winCount))),3)
+    recordWPlayer=str(winCount)+'-'+str(lossCount)+' ( '+str(winPercentage)+')'
     return recordWPlayer
