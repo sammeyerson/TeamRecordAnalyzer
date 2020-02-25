@@ -8,14 +8,16 @@ from findRecord import findRecord
 from findRecord import get_team_misc, get_game_logs, get_stats, \
 get_single_season_stats, get_team_stats, get_opp_stats, get_schedule, \
 get_team_schedule, record_with_player, record_without_player
-from PastData.odds_analysis import excel_to_csv, odds_parser, home_favorites
+from PastData.odds_analysis import excel_to_csv, odds_parser, home_favorites, \
+away_favorites
 
 start_date='2019-10-22'
 end_date='2020-04-15'
 #excel_to_csv()
 odds_data=pd.read_csv('PastData/odds_hisotry.csv')
 data=odds_parser(odds_data)
-print('Home favorites ATS: ', home_favorites(data, 9.5))
+print('Home favorites ATS: ', home_favorites(data, 0))
+print('Away favorites ATS: ', away_favorites(data,0))
 #print(odds_parser(odds_data))
 
 #print('Record without player: ',winCount,'-',lossCount)

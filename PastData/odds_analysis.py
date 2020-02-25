@@ -14,39 +14,92 @@ def excel_to_csv():
     return 0
 
 
+def away_favorites(data, marginOfVictory):
+
+
+    #print(data)
+    away_favorite_cover=[]
+    for index, row in data.iterrows():
+
+        if str(row['Away Moneyline'])[:1]=='-':
+            spread  = str(row['Away Spread'])[1:]
+            if spread== 'pk' or spread=='PK':
+                spread=0
+            away_diff=int(row['Away Score'])-int(row['Home Score'])
+
+
+            if float(spread)>=marginOfVictory:
+                #print('Spread:: ', spread, '  Diff:: ', home_diff)
+                if float(away_diff)>float(spread):
+                    away_favorite_cover.append('Yes')
+                elif float(away_diff)==float(spread):
+                        away_favorite_cover.append('Push')
+                        #print('Spread:: ', spread, '  Diff:: ', away_diff, ' ::Push')
+                else:
+                    away_favorite_cover.append('No')
+    coveredCount=0
+    pushCount=0
+    notCoveredCount=0
+    for x in away_favorite_cover:
+        if x=='Yes':
+            coveredCount+=1
+        elif x=='Push':
+            pushCount+=1
+        else:
+            notCoveredCount+=1
+
+    coveredRecord=str(coveredCount)+'-'+str(notCoveredCount)+'-'+str(pushCount)
+
+
+
+
+
+
+    return coveredRecord
+
+
 
 def home_favorites(data, marginOfVictory):
 
 
-    #print(data)
+    print(data)
     home_favorite_cover=[]
     for index, row in data.iterrows():
 
         if str(row['Home Moneyline'])[:1]=='-':
+        #if int(row['Home Moneyline'])<int(row['Away Moneyline']):
             spread  = str(row['Home Spread'])[1:]
             if spread== 'pk' or spread=='PK':
                 spread=0
             home_diff=int(row['Home Score'])-int(row['Away Score'])
 
 
-            if float(spread)>marginOfVictory:
-                #print('Spread:: ', spread, '  Diff:: ', home_diff)
-                if float(home_diff)>=float(spread):
+            if float(spread)>=marginOfVictory:
+            #print('Spread:: ', spread, '  Diff:: ', home_diff)
+                if float(home_diff)>float(spread):
                     home_favorite_cover.append('Yes')
+                    #print('Spread:: ', spread, '  Diff:: ', home_diff, ' ::yes')
+                elif float(home_diff)==float(spread):
+                    home_favorite_cover.append('Push')
+                    #print('Spread:: ', spread, '  Diff:: ', home_diff, ' ::Push')
                 else:
                     home_favorite_cover.append('No')
+                    #print('Spread:: ', spread, '  Diff:: ', home_diff, ' ::no')
     coveredCount=0
     notCoveredCount=0
+    pushCount=0
     for x in home_favorite_cover:
         if x=='Yes':
             coveredCount+=1
+        elif x=='Push':
+            pushCount+=1
         else:
             notCoveredCount+=1
 
-    coveredRecord=str(coveredCount)+'-'+str(notCoveredCount)
+    coveredRecord=str(coveredCount)+'-'+str(notCoveredCount)+'-'+str(pushCount)
 
 
-
+    #print(home_favorite_cover)
 
 
 
