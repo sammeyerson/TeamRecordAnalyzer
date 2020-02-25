@@ -1,7 +1,6 @@
 import csv
 import pandas as pd
 import numpy as np
-import matplotlib.pyplot as plt
 import math
 from requests import get
 from bs4 import BeautifulSoup
