@@ -5,8 +5,9 @@ import math
 
 def excel_to_csv():
 
-    odds_hisotry= pd.read_excel(r'/Users/SamMeyerson 1/Downloads/nba_odds_2019-20.xlsx', sheet_name='Sheet1')
-    odds_hisotry.to_csv(r'PastData/odds_hisotry.csv',index = None, header=True)
+    #odds_hisotry= pd.read_excel(r'/Users/SamMeyerson 1/Downloads/nba_odds_2019-20.xlsx', sheet_name='Sheet1')
+    odds_hisotry=pd.read_csv('PastData/odds_hisotry.csv')
+    #odds_hisotry.to_csv(r'PastData/odds_hisotry.csv',index = None, header=True)
     #^source for data: https://www.sportsbookreviewsonline.com/scoresoddsarchives/nba/nbaoddsarchives.htm
 
 
@@ -46,16 +47,7 @@ def odds_parser(odds_hisotry):
 
             away_score.append(str(row['Final']))
             V_ML.append(int(row['ML']))
-            """if str(row['Open'])=='pk' or str(row['Close'])=='pk' or float(row['Open'])>45:
-                open_total.append(str(row['Open']))
-                closed_total.append(str(row['Close']))
-            else:
-                open_spread.append(str(row['Open']))
-                closed_spread.append(str(row['Close']))"""
-            """elif float(row['Open'])>45:
-                #is a total
-                open_total.append(str(row['Open']))
-                closed_total.append(str(row['Close']))"""
+
             if str(row['Close'])=='pk' or str(row['Close'])=='PK':
                 #open_total.append(str(row['Open']))
                 #closed_spread.append(str(row['Close']))
@@ -100,12 +92,7 @@ def odds_parser(odds_hisotry):
             home_team.append(str(row['Team']))
             home_score.append(str(row['Final']))
             H_ML.append(int(row['ML']))
-            """if str(row['Open'])=='pk' or str(row['Close'])=='pk' or float(row['Open'])>45:
-                open_total.append(str(row['Open']))
-                closed_total.append(str(row['Close']))
-            else:
-                open_spread.append(str(row['Open']))
-                closed_spread.append(str(row['Close']))"""
+
             #if type(row['Open']) is float:
             if str(row['Close'])=='pk' or str(row['Close'])=='PK':
                 #open_total.append(str(row['Open']))
