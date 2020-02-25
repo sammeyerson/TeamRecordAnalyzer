@@ -13,6 +13,45 @@ def excel_to_csv():
 
     return 0
 
+
+
+def home_favorites(data, marginOfVictory):
+
+
+    #print(data)
+    home_favorite_cover=[]
+    for index, row in data.iterrows():
+
+        if str(row['Home Moneyline'])[:1]=='-':
+            spread  = str(row['Home Spread'])[1:]
+            if spread== 'pk' or spread=='PK':
+                spread=0
+            home_diff=int(row['Home Score'])-int(row['Away Score'])
+
+
+            if float(spread)>marginOfVictory:
+                #print('Spread:: ', spread, '  Diff:: ', home_diff)
+                if float(home_diff)>=float(spread):
+                    home_favorite_cover.append('Yes')
+                else:
+                    home_favorite_cover.append('No')
+    coveredCount=0
+    notCoveredCount=0
+    for x in home_favorite_cover:
+        if x=='Yes':
+            coveredCount+=1
+        else:
+            notCoveredCount+=1
+
+    coveredRecord=str(coveredCount)+'-'+str(notCoveredCount)
+
+
+
+
+
+
+    return coveredRecord
+
 def odds_parser(odds_hisotry):
     #print(odds_hisotry)
     #create data frame that holds each team in game, date of game, final score, open/close
@@ -43,7 +82,26 @@ def odds_parser(odds_hisotry):
 
             #date.append(str(row['Date']))
             date.append(formatted_date)
-            away_team.append(str(row['Team']))
+
+            team_name=str(row['Team'])
+            if team_name[:2]=='LA':
+                team_name=team_name[:2]+' '+team_name[2:]
+            else:
+                upper=0
+                itter=int(0)
+                for x in team_name:
+
+                    if x.isupper():
+                        upper=upper+1
+
+                    if upper==2:
+                        team_name=team_name[:itter]+' '+team_name[itter:]
+                        break
+                    itter+=1
+
+
+
+            away_team.append(team_name)
 
             away_score.append(str(row['Final']))
             V_ML.append(int(row['ML']))
@@ -58,10 +116,7 @@ def odds_parser(odds_hisotry):
                 else:
                     home_spread='-'+str(row['Close'])
                     away_spread='+'+str(row['Close'])
-                """if int(row['ML'])>0:
-                    spread='-'+str(row['Close'])
-                else:
-                    spread='+'+str(row['Close'])"""
+
                 closed_spread.append(spread)
                 home_spreads.append(home_spread)
                 away_spreads.append(away_spread)
@@ -89,7 +144,25 @@ def odds_parser(odds_hisotry):
         elif str(row['VH'])=='H':
 
 
-            home_team.append(str(row['Team']))
+            team_name=str(row['Team'])
+            if team_name[:2]=='LA':
+                team_name=team_name[:2]+' '+team_name[2:]
+            else:
+                upper=0
+                itter=int(0)
+                for x in team_name:
+
+                    if x.isupper():
+                        upper=upper+1
+
+                    if upper==2:
+                        team_name=team_name[:itter]+' '+team_name[itter:]
+                        break
+                    itter+=1
+
+
+            home_team.append(team_name)
+
             home_score.append(str(row['Final']))
             H_ML.append(int(row['ML']))
 
@@ -105,10 +178,7 @@ def odds_parser(odds_hisotry):
                 else:
                     home_spread='+'+str(row['Close'])
                     away_spread='-'+str(row['Close'])
-                """if int(row['ML'])>0:
-                    spread='-'+str(row['Close'])
-                else:
-                    spread='+'+str(row['Close'])"""
+
                 closed_spread.append(spread)
                 home_spreads.append(home_spread)
                 away_spreads.append(away_spread)
@@ -127,10 +197,7 @@ def odds_parser(odds_hisotry):
                     else:
                         home_spread='+'+str(row['Close'])
                         away_spread='-'+str(row['Close'])
-                    """if int(row['ML'])>0:
-                        spread='-'+str(row['Close'])
-                    else:
-                        spread='+'+str(row['Close'])"""
+
                     closed_spread.append(spread)
                     home_spreads.append(home_spread)
                     away_spreads.append(away_spread)
@@ -158,19 +225,14 @@ def odds_parser(odds_hisotry):
     'Away Score': away_score,
     'Away Moneyline':V_ML,
     'Away Spread':away_spreads,
-    #'Open Spread':open_spread,
-    #'Closed Spread':closed_spread,
-    #'Open Total':open_total,
-    #'Closed Total':closed_total,
-
+    'Closed Total': closed_total
     }
     lineup_frame=pd.DataFrame(
     dataForDF,
     index=Rank)
-    """,
-    index=Rank"""
+
     #datesIWannaSee=lineup_frame[lineup_frame['Date']=='1-03']
-    print(lineup_frame)
+    #print(lineup_frame)
     #print(datesIWannaSee)
 
-    return 0
+    return lineup_frame
