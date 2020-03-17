@@ -4,6 +4,7 @@ import numpy as np
 import math
 from requests import get
 from bs4 import BeautifulSoup
+#from StrengthOfSchedule import SOS
 
 try:
     from constants import TEAM_TO_TEAM_ABBR
@@ -48,13 +49,16 @@ def findRecord(team):
     dataForDF,
     index=Rank)
     itt=int(0)
-    print(winPct_frame)
+    #print(winPct_frame)
 
     for i in range(rowCount):
         row=winPct_frame.iloc[itt]
         teamName=str(row['Team'])
         if team in teamName:
-            return row['Winning Pct']
+            #return row['Winning Pct']
+            record=row['Winning Pct']
+            record=round(record, 3)
+            return record
 
         itt=itt+1
 
@@ -310,24 +314,32 @@ def record_with_player(player, team):
     end_date='2020-04-15'
     player_game_log=get_game_logs(player,start_date,end_date)
 
-    player_games_played=player_game_log[['DATE','3P']]
-
+    player_games_played=player_game_log[['DATE','3P','MP']]
+    #print(player_game_log)
     player_games_played=player_games_played[player_games_played['3P']!='Inactive']
     player_games_played=player_games_played[player_games_played['3P']!='Did Not Play']
+    #player_games_played=player_games_played[len(str(player_games_played['3P']))< 3]
 
     player_games_played['DATE']=player_games_played['DATE'].astype(str)
+    player_games_played['MP']=player_games_played['MP'].astype(str)
     team_schedule=get_team_schedule(team,2020)
     team_schedule['DATE']=team_schedule['DATE'].astype(str)
     commonGames = pd.merge(player_games_played, team_schedule, on=['DATE'], how='inner', sort=True)
+    #print(commonGames)
+    #print('SOS is:: ', SOS(commonGames))
+    sos=SOS(commonGames)
+    sos=round(sos, 3)
     winCount=0
     lossCount=0
     for index, row in commonGames.iterrows():
+        #print('Common games:: ', str(row['DATE']))
         if float(row['Points'])>float(row['Opponent Points']):
             winCount=winCount+1
         else:
             lossCount=lossCount+1
     winPercentage=round((float(winCount)/(float(lossCount)+float(winCount))),3)
-    recordWPlayer=str(winCount)+'-'+str(lossCount)+' ( '+str(winPercentage)+')'
+    recordWPlayer=str(winCount)+'-'+str(lossCount)+' ( '+str(winPercentage)+')'\
+    +' SOS: '+str(sos)
     return recordWPlayer
 
 def record_without_player(player, team):
@@ -336,13 +348,17 @@ def record_without_player(player, team):
     end_date='2020-04-15'
     player_game_log=get_game_logs(player,start_date,end_date)
 
+
     player_games_played=player_game_log[['DATE','3P']]
     date_game_missed=[]
     itt=int(0)
     Rank=[]
 
     for index, row in player_games_played.iterrows():
-        if str(row['3P'])=='Inactive':
+        #if str(row['3P'])=='Inactive':
+        #if str(row['3P'])==str(row['MP']):
+        if len(str(row['3P']))>=3:
+            #print('Missed:: ',str(row['DATE']))
             date_game_missed.append(row['DATE'])
             itt=itt+1
             Rank.append(itt)
@@ -363,6 +379,10 @@ def record_without_player(player, team):
     team_schedule=get_team_schedule(team,2020)
     team_schedule['DATE']=team_schedule['DATE'].astype(str)
     uncommonGames = pd.merge(player_games_missed, team_schedule, on=['DATE'], sort=False)
+
+    sos=SOS(uncommonGames)
+    sos=round(sos, 3)
+
     winCount=0
     lossCount=0
     for index, row in uncommonGames.iterrows():
@@ -372,5 +392,30 @@ def record_without_player(player, team):
             lossCount=lossCount+1
 
     winPercentage=round((float(winCount)/(float(lossCount)+float(winCount))),3)
-    recordWPlayer=str(winCount)+'-'+str(lossCount)+' ( '+str(winPercentage)+')'
+    recordWPlayer=str(winCount)+'-'+str(lossCount)+' ( '+str(winPercentage)+')'\
+    +' SOS: '+str(sos)
     return recordWPlayer
+
+
+def SOS(schedule):
+
+
+
+    #print(schedule)
+    itt=0
+    totalRecordOfOpp=0
+    for index, row in schedule.iterrows():
+        opponent=row['Opponent']
+        opponent_slip=opponent.split()
+        opponent=opponent_slip[-1]
+        recordOfOpponent=findRecord(opponent)
+        totalRecordOfOpp=totalRecordOfOpp+float(recordOfOpponent)
+        #print(opponent, ' record is:: ',recordOfOpponent)
+        itt=itt+1
+
+    strengthOfSched=totalRecordOfOpp/float(itt)
+
+
+
+
+    return strengthOfSched

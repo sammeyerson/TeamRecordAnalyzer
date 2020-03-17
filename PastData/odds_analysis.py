@@ -5,9 +5,9 @@ import math
 
 def excel_to_csv():
 
-    #odds_hisotry= pd.read_excel(r'/Users/SamMeyerson 1/Downloads/nba_odds_2019-20.xlsx', sheet_name='Sheet1')
-    odds_hisotry=pd.read_csv('PastData/odds_hisotry.csv')
-    #odds_hisotry.to_csv(r'PastData/odds_hisotry.csv',index = None, header=True)
+    odds_hisotry= pd.read_excel(r'/Users/SamMeyerson 1/Downloads/nba_odds_2019-20.xlsx', sheet_name='Sheet1')
+    #odds_hisotry=pd.read_csv('PastData/odds_hisotry.csv')
+    odds_hisotry.to_csv(r'PastData/odds_hisotry.csv',index = None, header=True)
     #^source for data: https://www.sportsbookreviewsonline.com/scoresoddsarchives/nba/nbaoddsarchives.htm
 
 
@@ -21,7 +21,8 @@ def away_favorites(data, marginOfVictory):
     away_favorite_cover=[]
     for index, row in data.iterrows():
 
-        if str(row['Away Moneyline'])[:1]=='-':
+        if str(row['Away Spread'])[:1]=='-':
+            #print(row)
             spread  = str(row['Away Spread'])[1:]
             if spread== 'pk' or spread=='PK':
                 spread=0
@@ -57,16 +58,67 @@ def away_favorites(data, marginOfVictory):
 
     return coveredRecord
 
+def away_dogs(data, marginOfVictory):
+
+
+    #print(data)
+    away_dogs_cover=[]
+    for index, row in data.iterrows():
+
+        if str(row['Away Spread'])[:1]=='+':
+
+            #print(row)
+
+            spread  = '-'+str(row['Away Spread'])[1:]
+            if spread== '-pk' or spread=='-PK':
+                spread=0
+
+            away_diff=int(row['Away Score'])-int(row['Home Score'])
+
+
+
+            #print('Spread:: ', spread, '  Diff:: ', away_diff)
+            if float(away_diff)>float(spread):
+                away_dogs_cover.append('Yes')
+                #print('Yes')
+            elif float(away_diff)==float(spread):
+                away_dogs_cover.append('Push')
+                #print('Push')
+                        #print('Spread:: ', spread, '  Diff:: ', away_diff, ' ::Push')
+            else:
+                away_dogs_cover.append('No')
+                #print('No')
+    coveredCount=0
+    pushCount=0
+    notCoveredCount=0
+    for x in away_dogs_cover:
+        if x=='Yes':
+            coveredCount+=1
+        elif x=='Push':
+            pushCount+=1
+        else:
+            notCoveredCount+=1
+
+    coveredRecord=str(coveredCount)+'-'+str(notCoveredCount)+'-'+str(pushCount)
+
+
+
+
+
+
+    return coveredRecord
+
 
 
 def home_favorites(data, marginOfVictory):
 
 
-    print(data)
+    #print(data)
     home_favorite_cover=[]
     for index, row in data.iterrows():
 
-        if str(row['Home Moneyline'])[:1]=='-':
+        if str(row['Home Spread'])[:1]=='-':
+            #print(row)
         #if int(row['Home Moneyline'])<int(row['Away Moneyline']):
             spread  = str(row['Home Spread'])[1:]
             if spread== 'pk' or spread=='PK':
@@ -74,17 +126,16 @@ def home_favorites(data, marginOfVictory):
             home_diff=int(row['Home Score'])-int(row['Away Score'])
 
 
-            if float(spread)>=marginOfVictory:
-            #print('Spread:: ', spread, '  Diff:: ', home_diff)
-                if float(home_diff)>float(spread):
-                    home_favorite_cover.append('Yes')
-                    #print('Spread:: ', spread, '  Diff:: ', home_diff, ' ::yes')
-                elif float(home_diff)==float(spread):
-                    home_favorite_cover.append('Push')
-                    #print('Spread:: ', spread, '  Diff:: ', home_diff, ' ::Push')
-                else:
-                    home_favorite_cover.append('No')
-                    #print('Spread:: ', spread, '  Diff:: ', home_diff, ' ::no')
+
+            if float(home_diff)>float(spread):
+                home_favorite_cover.append('Yes')
+                #print('Spread:: ', spread, '  Diff:: ', home_diff, ' ::yes')
+            elif float(home_diff)==float(spread):
+                home_favorite_cover.append('Push')
+                #print('Spread:: ', spread, '  Diff:: ', home_diff, ' ::Push')
+            else:
+                home_favorite_cover.append('No')
+                #print('Spread:: ', spread, '  Diff:: ', home_diff, ' ::no')
     coveredCount=0
     notCoveredCount=0
     pushCount=0
@@ -104,6 +155,59 @@ def home_favorites(data, marginOfVictory):
 
 
     return coveredRecord
+
+
+def home_dogs(data, marginOfVictory):
+
+
+
+    home_dogs_cover=[]
+    for index, row in data.iterrows():
+
+        if str(row['Home Spread'])[:1]=='+':
+
+            #print(row)
+
+            spread  = '-'+str(row['Home Spread'])[1:]
+            if spread== '-pk' or spread=='-PK':
+                spread=0
+
+            home_diff=int(row['Home Score'])-int(row['Away Score'])
+
+
+            #print(row)
+            #print('Spread:: ', spread, '  Diff:: ', home_diff)
+            if float(home_diff)>float(spread):
+                home_dogs_cover.append('Yes')
+                #print('Yes')
+            elif float(home_diff)==float(spread):
+                home_dogs_cover.append('Push')
+                #print('Push')
+                        #print('Spread:: ', spread, '  Diff:: ', away_diff, ' ::Push')
+            else:
+                home_dogs_cover.append('No')
+                #print('No')
+    coveredCount=0
+    pushCount=0
+    notCoveredCount=0
+    for x in home_dogs_cover:
+        if x=='Yes':
+            coveredCount+=1
+        elif x=='Push':
+            pushCount+=1
+        else:
+            notCoveredCount+=1
+
+    coveredRecord=str(coveredCount)+'-'+str(notCoveredCount)+'-'+str(pushCount)
+
+
+
+
+
+
+    return coveredRecord
+
+
 
 def odds_parser(odds_hisotry):
     #print(odds_hisotry)
